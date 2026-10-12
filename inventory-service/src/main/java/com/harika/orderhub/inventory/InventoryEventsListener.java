@@ -5,7 +5,7 @@ import com.harika.orderhub.common.Json;
 import com.harika.orderhub.common.Topics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.ObjectOptimisticLockingFailureException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,7 @@ public class InventoryEventsListener {
         for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
             try {
                 return inventory.reserve(event.orderId(), event.sku(), event.quantity());
-            } catch (ObjectOptimisticLockingFailureException e) {
+            } catch (OptimisticLockingFailureException e) {
                 log.debug("Stock for {} changed under us (attempt {}/{})",
                         event.sku(), attempt, MAX_ATTEMPTS);
             }
